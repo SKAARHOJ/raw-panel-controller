@@ -11,6 +11,8 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import generateSVG from './old_svg'
+import addHardwareComponent from './hardwareComponent'
 
   export default {
     name: 'landing-page',
@@ -28,8 +30,10 @@ import { ipcRenderer } from 'electron'
       })
       ipcRenderer.on('_panelTopology_HWC', (event, data) => {
         const json = JSON.parse(data)
+        console.log(json)
         this.hwc = json.HWc
         this.typeIndex = json.typeIndex
+        this.generateSVG()
       })
       ipcRenderer.on('_serial', (event, data) => {
         this.serial = data
@@ -41,7 +45,6 @@ import { ipcRenderer } from 'electron'
         this.version = data
       })
       ipcRenderer.on('HWC', (event, data) => {
-        console.log(this.hwc)
         console.log(data)
       })
       this.requestPanelInformation()
@@ -54,6 +57,13 @@ import { ipcRenderer } from 'electron'
       requestPanelInformation() {
         ipcRenderer.send('request', 'list\n')
       },
+      generateSVG() {
+        generateSVG(this.hwc)
+        //let svg = this.$refs.svg.children[0]
+        //for (let component of this.hwc) {
+        //  addHardwareComponent(svg, component, this.typeIndex)
+        //}
+      }
     }
   }
 </script>

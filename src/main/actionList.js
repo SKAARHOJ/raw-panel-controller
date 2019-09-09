@@ -36,9 +36,15 @@ const actionList =
 }
 
 function parseHWC(client, hwc, value) {
-  console.log(hwc)
+  let i = hwc.indexOf('.')
+  let mask = undefined
+  let id = undefined
+  if (i >= 0) mask = hwc.substring(i + 1)
+  else i = hwc.length
+  id = hwc.slice(4, i)
   client.send('HWC', {
-    id: hwc.substring(4),
+    id,
+    mask,
     value
   })
 }
