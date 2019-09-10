@@ -35,7 +35,6 @@ function setScrollLink(e, hwcIndex) { // Sets scroll link for SVG element
   return setAttributes(e, {
     'click': function() {
         toggleHWc(_hwcIndex);
-        updateHWcDisplay();
           getElementById('fn' + _hwcIndex).scrollIntoView({
             behavior: "smooth",
             block: "start"
@@ -56,24 +55,6 @@ function toggleHWc(hwcIndex) {
   }
 
   setCookie('selectedHWc', selectedHWc.join());
-}
-
-function updateHWcDisplay(atLoad) {
-  deselectHWcElement();
-    for (var j = 0; j < HWc.length; j++) {
-      getElementById("fn" + j).style.display = "none";
-    }
-
-    var lastSelected = null;
-    var selectedElements = 0;
-    for (var i = 0; i < HWc.length; i++) {
-      if (selectedHWc[i]) {
-        getElementById("hwc" + i).classList.add("selectedEl");
-        getElementById("fn" + i).style.display = 'block';
-        lastSelected = i;
-        selectedElements++;
-      }
-  }
 }
 
 function paintMainElement(e) { // Main paint
@@ -191,7 +172,7 @@ function labelChanged(label) {
   _labels[parts[1]][parts[2]] = label.value;
 }
 
-export default function(_HWc) { // Initializes the whole page.
+export default function(_HWc, vueComponent) { // Initializes the whole page.
   HWc = _HWc
   let e = document.getElementById('ctrlimg')
 
@@ -322,9 +303,12 @@ export default function(_HWc) { // Initializes the whole page.
             'id': 'hwc' + i
           });
         }
+        console.log('adding event')
+        b.addEventListener('click', () => vueComponent.show(i))
         break;
     }
-    addSVGElement(setScrollLink(paintMainElement(b), i), HWc[i][5]);
+    // addSVGElement(setScrollLink(paintMainElement(b), i), HWc[i][5]);
+    addSVGElement(paintMainElement(b), HWc[i][5]);
 
     // Adds extra graphics in some cases of symbols:
     switch (HWc[i].type) {
@@ -891,7 +875,6 @@ export default function(_HWc) { // Initializes the whole page.
       }
     }
   }
-  updateHWcDisplay(true);
 }
 
 function drawLogicSelector(hwcIndex, stateIndex, actionIndex) {

@@ -1,6 +1,7 @@
 <template>
   <div id="main">
-  <div id="wrapper">
+    <div id="wrapper">
+    <v-dialog/>
     <div class="svg" ref="svg"></div>
   </div>
   <div>
@@ -62,17 +63,34 @@ import addHardwareComponent from './hardwareComponent'
         ipcRenderer.send('request', 'list\n')
       },
       generateSVG() {
-        generateSVG(this.hwc)
-        //let svg = this.$refs.svg.children[0]
-        //for (let component of this.hwc) {
-        //  addHardwareComponent(svg, component, this.typeIndex)
-        //}
+        generateSVG(this.hwc, this)
+      },
+      show(hwc) {
+        this.$modal.show('dialog', {
+          title: `Alert! ${hwc}`,
+          text: 'You are too awesome',
+          buttons: [
+            {
+              title: 'Deal with it',
+              handler: () => { alert('Woot!') }
+            },
+            {
+              title: '',       // Button title
+              default: true,    // Will be triggered by default if 'Enter' pressed.
+              handler: () => {} // Button click handler
+            },
+            {
+              title: 'Close'
+            }
+          ]
+        })
+
       }
     }
   }
 </script>
 
-<style scoped>
+<style >
 #wrapper {
   display: flex;
   flex-direction: column;
@@ -103,9 +121,17 @@ li {
   text-align: justify;
 }
 
+.hwcElement {
+  cursor:pointer;
+}
+
 .hwcElement:hover {
-  border-color: red;
   stroke: red;
+  stroke-width: 10px;
+}
+
+circle {
+  cursor: pointer;
 }
 text {
   user-select: none;
