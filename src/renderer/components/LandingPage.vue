@@ -4,12 +4,13 @@
     <v-dialog/>
     <div class="svg" ref="svg"></div>
   </div>
-  <div>
-    <ul>
+  <div id="info">
+    <ul id="hardwareInfo">
     <li> Serial number: {{ serial }} </li>
     <li> Model: {{ model }} </li>
     <li> Version: {{ version }} </li>
     </ul>
+    <console/>
   </div>
   </div>
 </template>
@@ -18,10 +19,11 @@
 import { ipcRenderer } from 'electron'
 import generateSVG from './old_svg'
 import addHardwareComponent from './hardwareComponent'
+import Console from './Console'
 
   export default {
     name: 'landing-page',
-    components: {},
+    components: { Console },
     data() { return {
       hwc: [],
       typeIndex:[],
@@ -51,6 +53,17 @@ import addHardwareComponent from './hardwareComponent'
       })
       ipcRenderer.on('HWC', (event, data) => {
         console.log(data)
+        const i = +data.id - 1
+        let elem = document.getElementById(`hwc${i}`)
+        if (data.value === 'Down') elem.classList.add('selected')
+        else if (data.value === 'Up') elem.classList.remove('selected')
+        else if (data.value.match(/Enc/)) {
+          const val = parseInt(data.value.substring(4))
+          let color = 'lightgreen'
+          if (val === -1) color = 'lightcoral'
+          elem.setAttribute('fill', color)
+          setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
+        }
       })
       this.requestPanelInformation()
       this.requestPanelTopology()
@@ -65,22 +78,19 @@ import addHardwareComponent from './hardwareComponent'
       generateSVG() {
         generateSVG(this.hwc, this)
       },
-      show(hwc) {
+      show(index) {
+        ipcRenderer.send('request', `HWC#${index + 1}=5\n`)
         this.$modal.show('dialog', {
-          title: `Alert! ${hwc}`,
+          title: `Alert! ${index}`,
           text: 'You are too awesome',
           buttons: [
             {
               title: 'Deal with it',
-              handler: () => { alert('Woot!') }
-            },
-            {
-              title: '',       // Button title
-              default: true,    // Will be triggered by default if 'Enter' pressed.
-              handler: () => {} // Button click handler
-            },
-            {
-              title: 'Close'
+              default: true,
+              handler: () => {
+                ipcRenderer.send('request', `HWC#${index + 1}=0\n`)
+                this.$modal.hide('dialog')
+              }
             }
           ]
         })
@@ -107,6 +117,21 @@ import addHardwareComponent from './hardwareComponent'
   flex-direction: column;
   width: 100%;
   height: 100%;
+}
+
+#info {
+  display: grid;
+  grid-gap: 10px 10px;
+  grid-template-areas:
+  "info console console console console console console console";
+  height: 25%;
+  text-align: center;
+  justify-items: center;
+}
+
+#hardwareInfo {
+  grid-area: info;
+  justify-self: center;
 }
 .svg {
   width: 100%;
@@ -137,5 +162,8 @@ text {
   user-select: none;
   cursor: pointer;
   pointer-events: none;
+}
+.selected {
+  fill: yellow;
 }
 </style>

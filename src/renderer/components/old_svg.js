@@ -303,7 +303,6 @@ export default function(_HWc, vueComponent) { // Initializes the whole page.
             'id': 'hwc' + i
           });
         }
-        console.log('adding event')
         b.addEventListener('click', () => vueComponent.show(i))
         break;
     }
