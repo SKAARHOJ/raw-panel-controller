@@ -2,13 +2,17 @@
   <div id="main">
     <div id="wrapper">
       <hardware-modal ref='modal'></hardware-modal>
-      <div class="svg" ref="svg"></div>
+      <div :style="`width: ${size}%;`" class="svg" ref="svg"></div>
     </div>
     <div id="info">
       <ul id="hardwareInfo">
         <li> Serial number: {{ serial }} </li>
         <li> Model: {{ model }} </li>
         <li> Version: {{ version }} </li>
+        <div class="row">
+          <label> Size </label>
+        <input type="range" v-model="size"/>
+        </div>
       </ul>
       <console ref="console"/>
     </div>
@@ -30,7 +34,8 @@ export default {
     typeIndex:[],
     serial: '',
     model: '',
-    version: ''
+    version: '',
+    size: 100
   }},
   mounted() {
     ipcRenderer.on('_panelTopology_svgbase', (event, data) => {
@@ -38,7 +43,6 @@ export default {
     })
     ipcRenderer.on('_panelTopology_HWC', (event, data) => {
       const json = JSON.parse(data)
-      console.log(json)
       this.hwc = json.HWc
       this.typeIndex = json.typeIndex
       this.generateSVG()
@@ -53,9 +57,11 @@ export default {
       this.version = data
     })
     ipcRenderer.on('HWC', (event, data) => {
-      this.$refs.console.append(
-        `Component ${data.id} sent value ${data.value}`
-      )
+      let line = `Component ${data.id} sent value ${data.value}`
+      if (data.direction) {
+        line += ` from the ${data.direction} corner`
+      }
+      this.$refs.console.append(line)
       const i = +data.id - 1
       let elem = document.getElementById(`hwc${i}`)
       if (data.value === 'Down') elem.classList.add('selected')
@@ -126,8 +132,7 @@ export default {
   justify-content: left;
 }
 .svg {
-  width: 100%;
-  height: 100%;
+  height: auto;
   position: relative;
   align-self: center;
   border: 10px;

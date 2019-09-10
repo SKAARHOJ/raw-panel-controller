@@ -1,7 +1,7 @@
 <template>
   <div id="console">
     <ul>
-      <li v-for="line in display">
+      <li v-for="line in lines">
         {{ line }}
       </li>
     </ul>
@@ -13,23 +13,14 @@ export default {
   name: 'console',
   data() {
     return {
-      lines: []
-    }
-  },
-  computed: {
-    display() {
-      let reversed = new Array(this.lines.length)
-      let j = 0;
-      for (let i = this.lines.length - 1, j = 0; i >= 0; --i) {
-        reversed[j] = this.lines[i]
-        ++j
-      }
-      return reversed
+      lines: new Array(256),
+      current: 0,
     }
   },
   methods: {
     append(info) {
-      this.lines.push(info)
+      const length = this.lines.unshift(info)
+      if (length > 50) this.lines.pop()
     }
   }
 }

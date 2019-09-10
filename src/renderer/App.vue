@@ -21,4 +21,10 @@ html, body, #app {
   height: 100%;
   margin: 0;
 }
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
 </style>

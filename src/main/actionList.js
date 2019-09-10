@@ -37,14 +37,21 @@ const actionList =
 
 function parseHWC(client, hwc, value) {
   let i = hwc.indexOf('.')
-  let mask = undefined
+  let direction = undefined
   let id = undefined
-  if (i >= 0) mask = hwc.substring(i + 1)
+  if (i >= 0)  {
+    let mask = +hwc.substring(i + 1)
+    console.log(mask)
+    if (mask === 1) direction = 'Top'
+    else if (mask === 2) direction = 'Left'
+    else if (mask === 4) direction = 'Bottom'
+    else if (mask === 8) direction = 'Right'
+  }
   else i = hwc.length
   id = hwc.slice(4, i)
   client.send('HWC', {
     id,
-    mask,
+    direction,
     value
   })
 }

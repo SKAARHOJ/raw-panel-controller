@@ -12,8 +12,8 @@
               autofocus
               :type="value.type"
               v-model="inputs[currentIndex][key].value"/>
-            <select v-else>
-              <option v-for="val of value.value" :value="val">
+            <select v-else v-model="value.selected">
+              <option v-for="val of value.options" :value="val">
               {{ val }}
               </option>
             </select>
@@ -83,7 +83,8 @@ export default {
         },
         displayType: {
           name: "Display Type",
-          value: ["Number", "No display",],
+          options: ["Integer", "No Display"],
+          selected: "Integer",
           type: 'select'
         },
       }
