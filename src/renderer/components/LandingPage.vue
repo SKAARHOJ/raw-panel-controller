@@ -1,11 +1,15 @@
 <template>
+  <div id="main">
   <div id="wrapper">
     <div class="svg" ref="svg"></div>
+  </div>
+  <div>
     <ul>
     <li> Serial number: {{ serial }} </li>
     <li> Model: {{ model }} </li>
     <li> Version: {{ version }} </li>
     </ul>
+  </div>
   </div>
 </template>
 
@@ -68,16 +72,23 @@ import addHardwareComponent from './hardwareComponent'
   }
 </script>
 
-<style>
+<style scoped>
 #wrapper {
   display: flex;
   flex-direction: column;
-  width: 50%;
-  height: auto;
+  width: auto;
+  height: 75%;
   text-align: center;
   align-content: center;
   position: relative;
-  left: 25%;
+  overflow: auto;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 .svg {
   width: 100%;
@@ -90,5 +101,15 @@ import addHardwareComponent from './hardwareComponent'
 li {
   list-style-type: none;
   text-align: justify;
+}
+
+.hwcElement:hover {
+  border-color: red;
+  stroke: red;
+}
+text {
+  user-select: none;
+  cursor: pointer;
+  pointer-events: none;
 }
 </style>
