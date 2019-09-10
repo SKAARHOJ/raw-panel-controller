@@ -10,7 +10,7 @@
     <li> Model: {{ model }} </li>
     <li> Version: {{ version }} </li>
     </ul>
-    <console/>
+    <console ref="console"/>
   </div>
   </div>
 </template>
@@ -52,7 +52,9 @@ import Console from './Console'
         this.version = data
       })
       ipcRenderer.on('HWC', (event, data) => {
-        console.log(data)
+        this.$refs.console.append(
+          `Component ${data.id} sent value ${data.value}`
+          )
         const i = +data.id - 1
         let elem = document.getElementById(`hwc${i}`)
         if (data.value === 'Down') elem.classList.add('selected')
