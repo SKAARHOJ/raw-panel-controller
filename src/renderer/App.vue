@@ -6,7 +6,7 @@
       <h3 v-else> Restarting Server </h3>
         <form class="row" @submit.prevent="restartServer">
         <label> Server Port </label>
-        <input autofocus="autofocus" v-model="port"></input>
+        <input id="port" autofocus="autofocus" v-model="port"></input>
         <input ref="button" value="Restart Server" type="button">
         </form>
     </div>
@@ -70,10 +70,16 @@ html, body, #app {
 #waiter {
   display: flex;
   flex-direction: column;
-  width: 33%;
-  background: lightgray;
+  max-width: 400px;
+  background: #064c9f;
   padding: 20px;
   border-radius: 5px;
-  text-align: feft;
+  text-align: left;
+  color: white;
+}
+
+#port {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 </style>
