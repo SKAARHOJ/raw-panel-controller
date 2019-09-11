@@ -62,7 +62,7 @@ const commandSerializers = {
   },
   HWCc({ index, state }) {
       return `HWCc#${index + 1}=${state}\n`
-  }
+  },
   HWC({ index, state }) {
       return `HWC#${index + 1}=${state}\n`
   }
