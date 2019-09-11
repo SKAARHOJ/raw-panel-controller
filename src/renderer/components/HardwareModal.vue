@@ -31,7 +31,7 @@
 <script>
 
 import { ipcRenderer } from 'electron'
-import hardwareController from './hardwareController'
+import hardwareController from '../../lib/hardwareController'
 
 export default {
   name: 'hardware-modal',

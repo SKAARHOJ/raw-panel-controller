@@ -21,10 +21,10 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import generateSVG from './old_svg'
+import generateSVG from '../../lib/svgGenerator'
 import Console from './Console'
 import HardwareModal from './HardwareModal'
-import hardwareController from './hardwareController'
+import hardwareController from '../../lib/hardwareController'
 
 export default {
   name: 'landing-page',
