@@ -49,10 +49,12 @@ export default {
       if (!this.inputs[index])
         this.inputs[index] = this.makeHardwareInput()
       this.enabled = true
+      ipcRenderer.send('request', { command: 'HWCc', value: { index, state: 130 }})
       ipcRenderer.send('request', { command: 'HWC', value: { index, state: 36 }})
     },
     close() {
       ipcRenderer.send('request', { command: 'HWC', value: { index: this.currentIndex, state: 0 }})
+      ipcRenderer.send('request', { command: 'HWCc', value: { index: this.currentIndex, state: 0 }})
       this.enabled = false
     },
     sendToHardware() {
