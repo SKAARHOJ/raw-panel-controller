@@ -63,7 +63,7 @@ export default {
     ipcRenderer.on('HWC', (event, data) => {
       let line = `Component ${data.id} sent value ${data.value}`
       if (data.direction) {
-        line += ` from the ${data.direction} corner`
+        line += `\tfrom the ${data.direction}`
       }
       this.$refs.console.append(line)
       const i = +data.id - 1
