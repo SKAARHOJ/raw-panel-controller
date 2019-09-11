@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron'
-import hardwareController from '../lib/hardwareController'
+import { serialize, deserialize } from '../lib/hardwareController'
 
 const actionList =
 {
@@ -27,11 +27,12 @@ function getAction({ command, value }) {
 }
 
 export function response(window, socket, command) {
-  const action = hardwareController.parse(command)
+  const action = deserialize(command)
   const f = getAction(action)
   f(window, socket, action)
 }
 
-export function request (socket, command) {
-  socket.write(command)
+export function request(socket, command) {
+  const buffer = serialize(command)
+  socket.write(buffer)
 }

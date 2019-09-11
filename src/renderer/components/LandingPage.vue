@@ -24,7 +24,6 @@ import { ipcRenderer } from 'electron'
 import generateSVG from '../../lib/svgGenerator'
 import Console from './Console'
 import HardwareModal from './HardwareModal'
-import hardwareController from '../../lib/hardwareController'
 
 export default {
   name: 'landing-page',
@@ -38,6 +37,9 @@ export default {
     size: 100
   }},
   mounted() {
+    ipcRenderer.on('list', (event, data) => {
+      this.$refs.svg.innerHTML = data
+    })
     ipcRenderer.on('_panelTopology_svgbase', (event, data) => {
       this.$refs.svg.innerHTML = data
     })
@@ -49,6 +51,8 @@ export default {
     })
     ipcRenderer.on('_serial', (event, data) => {
       this.serial = data
+    })
+    ipcRenderer.on('map', (event, data) => {
     })
     ipcRenderer.on('_model', (event, data) => {
       this.model = data
@@ -79,10 +83,10 @@ export default {
   },
   methods: {
     requestPanelTopology() {
-      ipcRenderer.send('request', '\nPanelTopology?\n')
+      ipcRenderer.send('request', { command: '\nPanelTopology?' })
     },
     requestPanelInformation() {
-      ipcRenderer.send('request', 'list\n')
+      ipcRenderer.send('request', { command:'list' })
     },
     generateSVG() {
       generateSVG(this.hwc, this)
@@ -91,7 +95,7 @@ export default {
       this.$refs.modal.show(index)
     },
     clear() {
-      hardwareController.send('Clear')
+      ipcRenderer.send('request', { command: 'Clear'})
     }
   }
 }

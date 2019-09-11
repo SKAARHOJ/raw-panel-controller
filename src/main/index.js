@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-const defaultPort = process.env.SK_RAW_PANEL_PORT ? process.env.SK_RAW_PANEL_PORT : 9923
+const defaultPort = process.env.SK_RAW_PANEL_PORT ? process.env.SK_RAW_PANEL_PORT : 9924
 
 function restartServer(server, window, { port }) {
   server.close()
@@ -32,12 +32,18 @@ function createServer () {
   })
   let server = net.createServer((socket) => {
     socket.setEncoding('utf8')
-    let rl = readline.createInterface({input: socket })
     ipcMain.on('request', (event, data) => request(socket, data))
-    window.webContents.send('connected', {})
+    window.webContents.send('connected', true)
+    let rl = readline.createInterface({input: socket })
     rl.on('line', (line) => response(window, socket, line));
   })
   server.listen(defaultPort, '0.0.0.0')
+  ipcMain.on('connected', (event, data) => {
+    server.getConnections((err, count) =>{
+      if (err) return;
+      window.webContents.send('connected', count > 0)
+  })
+  })
 }
 
 app.on('ready', createServer)

@@ -4,16 +4,16 @@
     <div class="modal-wrapper">
       <div class="modal-container" @click.stop>
         <form ref="form" @submit.prevent="sendToHardware">
-          <div class="row" v-for='(value, key) in inputs[currentIndex]'>
-            <label> {{ value.name }} </label>
+          <div class="row" v-for='(item, key) in inputs[currentIndex]'>
+            <label> {{ item.name }} </label>
             <input
-              v-if="value.type !== 'select'"
+              v-if="item.type !== 'select'"
               v-focus="key === 'title'"
               autofocus
-              :type="value.type"
+              :type="item.type"
               v-model="inputs[currentIndex][key].value"/>
-            <select v-else v-model="value.selected">
-              <option v-for="val of value.options" :value="val">
+            <select v-else v-model="item.value">
+              <option v-for="val of item.options" :value="val">
               {{ val }}
               </option>
             </select>
@@ -31,7 +31,6 @@
 <script>
 
 import { ipcRenderer } from 'electron'
-import hardwareController from '../../lib/hardwareController'
 
 export default {
   name: 'hardware-modal',
@@ -50,19 +49,26 @@ export default {
       if (!this.inputs[index])
         this.inputs[index] = this.makeHardwareInput()
       this.enabled = true
-      ipcRenderer.send('request', `HWC#${index + 1}=5\n`)
+      ipcRenderer.send('request', { command: 'HWC', value: { index, state: 5 }})
     },
     close() {
-      ipcRenderer.send('request', `HWC#${this.currentIndex + 1}=0\n`)
+      ipcRenderer.send('request', { command: 'HWC', value: { index: this.currentIndex, state: 0 }})
       this.enabled = false
     },
     sendToHardware() {
-      const title = this.inputs[this.currentIndex].title
-      hardwareController.sendHWCt(this.currentIndex, this.inputs[this.currentIndex])
+      ipcRenderer.send('request', {
+        command: 'HWCt',
+        value: this.makeHWCtValue(this.currentIndex)
+      })
       this.close()
     },
-    capitalize(value) {
-      return value.charAt(0).toUpperCase() + value.slice(1);
+    makeHWCtValue(index) {
+      let ret = { index }
+      let current = this.inputs[index]
+      for (let key in current) {
+        ret[key] = current[key].value
+      }
+      return ret
     },
     makeHardwareInput() {
       return {
@@ -84,7 +90,7 @@ export default {
         displayType: {
           name: "Display Type",
           options: ["Integer", "No Display"],
-          selected: "Integer",
+          value: "Integer",
           type: 'select'
         },
       }

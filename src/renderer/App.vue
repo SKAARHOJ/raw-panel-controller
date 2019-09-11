@@ -30,7 +30,11 @@
       }
     },
     mounted() {
-      ipcRenderer.on('connected', () => this.connected = true)
+      ipcRenderer.send('connected')
+      ipcRenderer.on('connected', (event, isConnected) => {
+        console.log(event, isConnected)
+        this.connected = isConnected
+      })
       ipcRenderer.on('restarted', () => { 
         setTimeout(() => this.restarting = false, 1000)
       })
