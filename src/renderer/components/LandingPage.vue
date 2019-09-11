@@ -13,6 +13,10 @@
           <label> Size </label>
         <input type="range" v-model="size"/>
         </div>
+        <form @submit.prevent='sendCommand' class="row">
+        <input placeholder="Command" type="text" v-model="rawCommand"/>
+        <input value="Send" type="button"/>
+        </form>
       </ul>
       <console ref="console"/>
     </div>
@@ -34,7 +38,8 @@ export default {
     serial: '',
     model: '',
     version: '',
-    size: 100
+    size: 100,
+    rawCommand: ''
   }},
   mounted() {
     ipcRenderer.on('list', (event, data) => {
@@ -70,6 +75,8 @@ export default {
       let elem = document.getElementById(`hwc${i}`)
       if (data.value === 'Down') elem.classList.add('selected')
       else if (data.value === 'Up') elem.classList.remove('selected')
+      else if (data.value === 'Speed:0') elem.classList.remove('selected')
+      else if (data.value.match(/^Speed:*/)) elem.classList.add('selected')
       else if (data.value.match(/Enc/)) {
         const val = parseInt(data.value.substring(4))
         let color = 'lightgreen'
@@ -96,6 +103,9 @@ export default {
     },
     clear() {
       ipcRenderer.send('request', { command: 'Clear'})
+    },
+    sendCommand() {
+      ipcRenderer.send('request', { command: this.rawCommand })
     }
   }
 }
