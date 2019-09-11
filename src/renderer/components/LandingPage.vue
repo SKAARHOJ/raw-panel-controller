@@ -11,11 +11,15 @@
         <li> Version: {{ version }} </li>
         <div class="row">
           <label> Size </label>
-        <input type="range" v-model="size"/>
+          <input type="range"
+                 min="10"
+                 max="200"
+                 v-model="size"
+                 @dblclick="size = 100"/>
         </div>
         <form @submit.prevent='sendCommand' class="row">
-        <input placeholder="Command" type="text" v-model="rawCommand"/>
-        <input value="Send" type="button"/>
+          <input placeholder="Command" type="text" v-model="rawCommand"/>
+          <input value="Send" type="button"/>
         </form>
       </ul>
       <console ref="console"/>
