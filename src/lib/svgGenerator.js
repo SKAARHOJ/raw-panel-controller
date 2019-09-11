@@ -950,7 +950,6 @@ function createHValue(newValue, hwcIndex, stateIndex, actionIndex = -1, valueInd
   if (!HWv[hwcIndex]) return false;
   if (!HWv[hwcIndex][stateIndex]) HWv[hwcIndex][stateIndex] = [];
   if (actionIndex == -1) {
-    console.log("Setting");
     HWv[hwcIndex][stateIndex] = newValue;
     return true;
   }

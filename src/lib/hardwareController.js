@@ -26,7 +26,6 @@ function parseHWC(line) {
   let id = undefined
   if (i >= 0)  {
     let mask = +key.substring(i + 1)
-    console.log(mask)
     if (mask === 1) direction = 'Top'
     else if (mask === 2) direction = 'Left'
     else if (mask === 4) direction = 'Bottom'
@@ -61,6 +60,9 @@ const commandSerializers = {
       `HWCt#${index + 1}=${value}|${display}|0|${title}|${label}`
     return command
   },
+  HWCc({ index, state }) {
+      return `HWC#${index + 1}=${state}\n`
+  }
   HWC({ index, state }) {
       return `HWC#${index + 1}=${state}\n`
   }

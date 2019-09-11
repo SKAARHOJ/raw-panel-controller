@@ -31,10 +31,7 @@
     },
     mounted() {
       ipcRenderer.send('connected')
-      ipcRenderer.on('connected', (event, isConnected) => {
-        console.log(event, isConnected)
-        this.connected = isConnected
-      })
+      ipcRenderer.on('connected', (event, isConnected) => this.connected = isConnected )
       ipcRenderer.on('restarted', () => { 
         setTimeout(() => this.restarting = false, 1000)
       })
@@ -43,7 +40,6 @@
       restartServer() {
         this.restarting = true
         ipcRenderer.send('restart', { port: this.port })
-        console.log('done')
       },
     }
   }
