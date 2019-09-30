@@ -11,42 +11,71 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-const defaultPort = process.env.SK_RAW_PANEL_PORT ? process.env.SK_RAW_PANEL_PORT : 9924
+const defaultPort = process.env.SK_RAW_PANEL_PORT ? process.env.SK_RAW_PANEL_PORT : 9923
 
-function restartServer(server, window, { port }) {
+
+function restart({server, client, state_serverMode, window }, { port, ip, serverMode }) {
   server.close()
-  server.listen(port, '0.0.0.0')
+  state_serverMode = serverMode
+  if (!serverMode) {
+    console.log(`listening on ${ip}:${port}`)
+    server.listen(port, ip)
+  } else {
+    try {
+    console.log('connecting client')
+      client.connect(port, ip)
+    } catch (err) {
+      window.webContents.send('error/client_connection_refused')
+      return ;
+    }
+    linkSocket(client, window)
+  }
   window.webContents.send('restarted')
 }
 
-function createServer () {
-  ipcMain.on('restart', (event, data) => restartServer(server, window, data))
+function linkSocket(socket, window) {
+  console.log('linking')
+  socket.setEncoding('utf8')
+  socket.on('close', () => {
+    window.webContents.send('socket_closed')
+  })
+  ipcMain.on('request', (event, data) => request(socket, data))
+  let rl = readline.createInterface({input: socket })
+  rl.on('line', (line) => response(window, socket, line));
+  window.webContents.send('connected', true)
+}
+
+function createWindow () {
   let window = new BrowserWindow({
     height: 563,
     useContentSize: true,
     width: 1000
   })
   window.loadURL(winURL)
-  window.on('closed', () => {
-    server.close()
-  })
-  let server = net.createServer((socket) => {
-    socket.setEncoding('utf8')
-    ipcMain.on('request', (event, data) => request(socket, data))
-    window.webContents.send('connected', true)
-    let rl = readline.createInterface({input: socket })
-    rl.on('line', (line) => response(window, socket, line));
-  })
-  server.listen(defaultPort, '0.0.0.0')
+  let state = {
+    server: net.createServer((socket) => linkSocket(socket, window)),
+    client: new net.Socket(),
+    serverMode: false,
+    window,
+  }
   ipcMain.on('connected', (event, data) => {
-    server.getConnections((err, count) =>{
-      if (err) return;
-      window.webContents.send('connected', count > 0)
+    if (!state.serverMode) {
+      state.server.getConnections((err, count) => {
+        if (err) return;
+        state.window.webContents.send('connected', count > 0)
+      })
+    } else {
+      state.window.webContents.send('connected', !state.client.pending)
+    }
   })
+  ipcMain.on('restart', (event, data) => restart(state, data))
+  window.on('closed', () => {
+    state.server.close()
+    if (!state.client.pending) state.client.end()
   })
 }
 
-app.on('ready', createServer)
+app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

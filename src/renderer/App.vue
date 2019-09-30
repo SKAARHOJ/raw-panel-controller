@@ -1,68 +1,68 @@
 <template>
   <div id="app">
-    <landing-page v-if="connected"></landing-page>
-    <div v-else id="waiter">
-      <h3 v-if="!restarting"> Waiting for connection </h3>
-      <h3 v-else> Restarting Server </h3>
-        <form class="row" @submit.prevent="restartServer">
-        <label> Server Port </label>
-        <input id="port" autofocus="autofocus" v-model="port"></input>
-        <input ref="button" value="Restart Server" type="button">
-        </form>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-  import LandingPage from '@/components/LandingPage'
   import { ipcRenderer } from  'electron'
 
   export default {
     name: 'raw-panel-controller',
-    components: {
-      LandingPage
-    },
     data() {
       return {
         connected: false,
-        restarting: false,
-        port: 9924
+        connecting: false,
+        port: 9923,
+        serverMode: false,
+        ip: '0.0.0.0',
+        header: 'Waiting for connection...'
       }
     },
     mounted() {
       ipcRenderer.send('connected')
-      ipcRenderer.on('connected', (event, isConnected) => this.connected = isConnected )
+      ipcRenderer.on('error/client_connection_refused', (event) =>  {
+        console.log('error')
+        this.header = 'Connection refused'
+        this.$refs.header.classList.remove('hidden')
+      });
+      ipcRenderer.on('connected', (event, isConnected) =>  {
+        setTimeout(() => { 
+          console.log(this.$route.path)
+          if (isConnected && !this.$route.path.match(/\/landing-page\//))
+            this.$router.push('/landing-page/')
+        }, 1000)
+      })
       ipcRenderer.on('restarted', () => { 
         setTimeout(() => this.restarting = false, 1000)
       })
     },
     methods: {
-      restartServer() {
+      restart() {
         this.restarting = true
-        ipcRenderer.send('restart', { port: this.port })
+        this.$refs.header.classList.remove('hidden')
+        this.header = 'Waiting for connection...'
+        ipcRenderer.send('restart', {
+          port: this.port,
+          ip: this.ip,
+          serverMode: this.serverMode
+        })
       },
+      changeIP(event, data) {
+        this.ip = this.defaultIP()
+      },
+      defaultIP() { return this.serverMode ? '0.0.0.0' : '192.168.10.99' }
     }
   }
 </script>
 
-<style>
-html, body, #app {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center
+<style scoped>
+.visible {
+  visibility: visible;
 }
-
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
+.hidden {
+  visibility: hidden;
 }
-
 #waiter {
   display: flex;
   flex-direction: column;
@@ -74,8 +74,41 @@ html, body, #app {
   color: white;
 }
 
-#port {
-  margin-right: 10px;
-  margin-left: 10px;
+.address {
+  width: 60%;
+  text-align: center;
+}
+.checkbox {
+  margin: 0%;
 }
 </style>
+
+<style>
+:root {
+--skaarhoj-blue: #064c9f
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center
+}
+
+.header {
+  background: var(--skaarhoj-blue);
+  color: white;
+  font-size: x-large;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+</style>
+

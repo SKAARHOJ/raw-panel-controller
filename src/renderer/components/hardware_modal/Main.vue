@@ -1,27 +1,14 @@
 <template>
-  <transition name="modal" v-if="enabled">
-  <div class="modal-mask" @click="close">
+  <transition name="modal">
+  <div class="modal-mask" @click="leave">
     <div class="modal-wrapper">
       <div class="modal-container" @click.stop>
-        <form ref="form" @submit.prevent="sendToHardware">
-          <div class="row" v-for='(item, key) in inputs[currentIndex]'>
-            <label> {{ item.name }} </label>
-            <input
-              v-if="item.type !== 'select'"
-              v-focus="key === 'title'"
-              autofocus
-              :type="item.type"
-              v-model="inputs[currentIndex][key].value"/>
-            <select v-else v-model="item.value">
-              <option v-for="val of item.options" :value="val">
-              {{ val }}
-              </option>
-            </select>
-          </div>
-          <div id="submit">
-            <input type="submit" value="Send"/>
-          </div>
-        </form>
+        <ul class="header row">
+          <router-link v-for="item, i of menu" :key="i" :to="{ name: item }">
+            {{ item }}
+          </router-link>
+        </ul>
+        <router-view/>
       </div>
     </div>
   </div>
@@ -36,33 +23,45 @@ export default {
   name: 'hardware-modal',
   data() {
     let arr = new Array(128)
-    arr.fill(undefined)
+    arr.fill(this.makeHardwareInput())
     return {
-      enabled: false,
       inputs: arr,
-      currentIndex: 0,
+      menu: ["Text", "Draw"],
     }
   },
+  computed: {
+    currentIndex() {
+      return +this.$route.params.id
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    this.close()
+    next()
+  },
   methods: {
-    show(index) {
-      this.currentIndex = index
+    open() {
+      console.log('opening')
+      const index = this.currentIndex
       if (!this.inputs[index])
         this.inputs[index] = this.makeHardwareInput()
-      this.enabled = true
       ipcRenderer.send('request', { command: 'HWCc', value: { index, state: 130 }})
       ipcRenderer.send('request', { command: 'HWC', value: { index, state: 36 }})
     },
     close() {
       ipcRenderer.send('request', { command: 'HWC', value: { index: this.currentIndex, state: 0 }})
       ipcRenderer.send('request', { command: 'HWCc', value: { index: this.currentIndex, state: 0 }})
-      this.enabled = false
+    },
+    leave() {
+      console.log('leaving')
+      this.$router.push('/landing-page/')
     },
     sendToHardware() {
+      console.log(`sending ${this.currentIndex}`)
       ipcRenderer.send('request', {
         command: 'HWCt',
         value: this.makeHWCtValue(this.currentIndex)
       })
-      this.close()
+      this.leave()
     },
     makeHWCtValue(index) {
       let ret = { index }
@@ -70,6 +69,7 @@ export default {
       for (let key in current) {
         ret[key] = current[key].value
       }
+      console.log(ret)
       return ret
     },
     makeHardwareInput() {
@@ -130,7 +130,6 @@ export default {
 .modal-container {
   width: 300px;
   margin: 0px auto;
-  padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -152,10 +151,26 @@ export default {
   transform: scale(1.1);
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+form {
+  padding: 20px 30px;
+}
+
+ul {
+  padding: 10px 10px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a.router-link-exact-active {
+  font-weight: bold;
+}
+
+a:hover {
+  color: lightgrey;
+  cursor: pointer;
 }
 
 #submit {

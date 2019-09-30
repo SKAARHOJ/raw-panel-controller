@@ -1,7 +1,7 @@
 <template>
   <div id="main">
-    <div id="wrapper">
-      <hardware-modal ref='modal'></hardware-modal>
+    <div id="wrapper" @wheel="changeSize">
+      <router-view/>
       <div :style="`width: ${size}%;`" class="svg" ref="svg"></div>
     </div>
     <div id="info">
@@ -13,7 +13,7 @@
           <label> Size </label>
           <input type="range"
                  min="10"
-                 max="200"
+                 max="maxSize"
                  v-model="size"
                  @dblclick="size = 100"/>
         </div>
@@ -31,11 +31,12 @@
 import { ipcRenderer } from 'electron'
 import generateSVG from '../../lib/svgGenerator'
 import Console from './Console'
-import HardwareModal from './HardwareModal'
+
+const maxSize = 300;
 
 export default {
   name: 'landing-page',
-  components: { Console, HardwareModal },
+  components: { Console },
   data() { return {
     hwc: [],
     typeIndex:[],
@@ -43,7 +44,7 @@ export default {
     model: '',
     version: '',
     size: 100,
-    rawCommand: ''
+    rawCommand: '',
   }},
   mounted() {
     ipcRenderer.on('list', (event, data) => {
@@ -81,6 +82,10 @@ export default {
       else if (data.value === 'Up') elem.classList.remove('selected')
       else if (data.value === 'Speed:0') elem.classList.remove('selected')
       else if (data.value.match(/^Speed:*/)) elem.classList.add('selected')
+      else if (data.value.match(/^Abs:*/)) { 
+        elem.classList.add('selected')
+        setTimeout(() => elem.classList.remove('selected'), 500)
+      }
       else if (data.value.match(/Enc/)) {
         const val = parseInt(data.value.substring(4))
         let color = 'lightgreen'
@@ -103,13 +108,18 @@ export default {
       generateSVG(this.hwc, this)
     },
     show(index) {
-      this.$refs.modal.show(index)
+     this.$router.push(`hardware-modal/${index}/`)
     },
     clear() {
       ipcRenderer.send('request', { command: 'Clear'})
     },
     sendCommand() {
       ipcRenderer.send('request', { command: this.rawCommand })
+    },
+    changeSize(event) {
+      this.size -= event.deltaY;
+      if (this.size < 10) this.size = 10;
+      else if (this.size > maxSize) this.size = maxSize;
     }
   }
 }
