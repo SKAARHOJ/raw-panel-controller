@@ -80,8 +80,14 @@ export default {
       let elem = document.getElementById(`hwc${i}`)
       if (data.value === 'Down') elem.classList.add('selected')
       else if (data.value === 'Up') elem.classList.remove('selected')
-      else if (data.value === 'Speed:0') elem.classList.remove('selected')
-      else if (data.value.match(/^Speed:*/)) elem.classList.add('selected')
+      else if (data.value === 'Speed:0') elem.setAttribute('fill', '#dddddd')
+      else if (data.value.match(/^Speed:*/)) {
+        const val = parseInt(data.value.substring(6))
+        let color = 'lightgreen'
+        if (val < 0) color = 'lightcoral'
+        elem.setAttribute('fill', color)
+        //setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
+      }
       else if (data.value.match(/^Abs:*/)) { 
         elem.classList.add('selected')
         setTimeout(() => elem.classList.remove('selected'), 500)
