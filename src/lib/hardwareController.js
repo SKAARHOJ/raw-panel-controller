@@ -64,7 +64,7 @@ const commandSerializers = {
   HWC({ index, state }) {
       return `HWC#${index + 1}=${state}\n`
   },
-  HWCg({controllerIndex, commandIndex, buffer }) {
+  HWCg({controllerIndex, buffer }) {
     if (!buffer) return ``
       let arr = new Array(3)
       arr[0] = buffer.slice(0, 86)

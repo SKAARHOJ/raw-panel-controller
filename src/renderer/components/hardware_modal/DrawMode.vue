@@ -71,22 +71,13 @@ export default {
       modifyBuffer(this.buffer, x, y, value)
     },
     sendBuffer() {
-      let arr = new Array(3)
-      arr[0] = this.buffer.slice(0, 86)
-      arr[1] = this.buffer.slice(86, 172)
-      arr[2] = this.buffer.slice(172, 256)
-      for (let i = 0; i < 3; ++i ) {
-        setTimeout(() => {
-          ipcRenderer.send('request', {
-            command: 'HWCg',
-            value: {
-              controllerIndex: +this.$route.params.id + 1,
-              commandIndex: i,
-              buffer: this.buffer
-            }
-          })
-        }, 1000 * (i + 1))
-      }
+      ipcRenderer.send('request', {
+        command: 'HWCg',
+        value: {
+          controllerIndex: +this.$route.params.id + 1,
+          buffer: this.buffer
+        }
+      })
     },
     move(event) {
       if (this.down) this.update(event)
