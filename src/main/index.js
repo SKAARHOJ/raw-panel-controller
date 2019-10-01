@@ -2,6 +2,7 @@ import { app, ipcMain, BrowserWindow } from 'electron'
 import * as net from 'net'
 import * as readline from 'readline'
 import { request, response } from './actionList'
+import bitmap from './bitmap'
 
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -73,6 +74,7 @@ function createWindow () {
     state.server.close()
     if (!state.client.pending) state.client.end()
   })
+  bitmap.register(window)
 }
 
 app.on('ready', createWindow)

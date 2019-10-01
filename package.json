@@ -51,6 +51,8 @@
     }
   },
   "dependencies": {
+    "bitmap": "^0.1.1",
+    "bitmap-manipulation": "^2.0.0",
     "bootstrap-vue": "^2.0.2",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",

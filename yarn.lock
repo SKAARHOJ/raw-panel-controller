@@ -1523,6 +1523,18 @@ binary-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
   integrity sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw==
 
+bitmap-manipulation@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/bitmap-manipulation/-/bitmap-manipulation-2.0.0.tgz#46c8ba328cf8f2b8a84971a586ae62a16267d5e5"
+  integrity sha512-TEsu4iytp29u/OTCbkwQSECmvV89S4xeJfPdEVh9S+6a9T6PM0lWl/yStpfFYq//k6tojvE/CfTuWpJgqCY4Lg==
+  dependencies:
+    struct-fu "^1.1.1"
+
+bitmap@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/bitmap/-/bitmap-0.1.1.tgz#60cc982ac65a00d2fb651183b5eb4223573cc2a8"
+  integrity sha1-YMyYKsZaANL7ZRGDtetCI1c8wqg=
+
 bluebird-lst@^1.0.7, bluebird-lst@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/bluebird-lst/-/bluebird-lst-1.0.9.tgz#a64a0e4365658b9ab5fe875eb9dfb694189bb41c"
@@ -7635,6 +7647,11 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
+
+struct-fu@^1.1.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/struct-fu/-/struct-fu-1.2.1.tgz#1b8920bf44b669914e969393de51bb2e920be551"
+  integrity sha512-QrtfoBRe+RixlBJl852/Gu7tLLTdx3kWs3MFzY1OHNrSsYYK7aIAnzqsncYRWrKGG/QSItDmOTlELMxehw4Gjw==
 
 style-loader@^0.21.0:
   version "0.21.0"

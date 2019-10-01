@@ -1,4 +1,5 @@
 <template>
+    <div class="main">
   <canvas ref="canvas"
           :width="width"
           :height="height"
@@ -10,11 +11,13 @@
           @mouseup="down = false"
           >
   </canvas>
+    <button @click="loadImage"> load </button>
+    </div>
 </template>
 
 <script>
 
-import { ipcRenderer } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 
 const RIGHT_CLICK = 2
 
@@ -79,6 +82,13 @@ export default {
         }
       })
     },
+    async loadImage() {
+      console.log(remote)
+      let filename = (await remote.dialog.showOpenDialog(null, {
+        properties: ['openFile']
+      }))[0]
+      ipcRenderer.send('bitmap', { command: 'open', value: { filename } })
+    },
     move(event) {
       if (this.down) this.update(event)
     }
@@ -92,5 +102,9 @@ canvas {
   width: 700px;
   border-style: solid;
   image-rendering: pixelated;
+}
+.main {
+  display: flex;
+  flex-direction: column;
 }
 </style>
