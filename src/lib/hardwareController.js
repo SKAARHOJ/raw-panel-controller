@@ -1,5 +1,3 @@
-import { ipcRenderer } from 'electron'
-
 export function deserialize(line) {
   let index
   if (line.match(/^HWC*/)) return parseHWC(line)
@@ -65,5 +63,15 @@ const commandSerializers = {
   },
   HWC({ index, state }) {
       return `HWC#${index + 1}=${state}\n`
-  }
+  },
+  HWCg({controllerIndex, commandIndex, buffer }) {
+    if (!buffer) return ``
+      let arr = new Array(3)
+      arr[0] = buffer.slice(0, 86)
+      arr[1] = buffer.slice(86, 172)
+      arr[2] = buffer.slice(172, 256)
+    return `HWCg#${controllerIndex}=0:${arr[0].toString('base64')}`
+    + `\nHWCg#${controllerIndex}=1:${arr[1].toString('base64')}`
+    + `\nHWCg#${controllerIndex}=2:${arr[2].toString('base64')}`
+  },
 }

@@ -34,5 +34,6 @@ export function response(window, socket, command) {
 
 export function request(socket, command) {
   const buffer = serialize(command)
+  console.log(buffer)
   socket.write(buffer)
 }
