@@ -49,14 +49,17 @@ function parseEquals(line, index) {
 }
 
 const commandSerializers = {
-  HWCt({index,  title, isLabel, value, displayType }) {
+  HWCt({ index,  title, isLabel, value,
+    displayType, label1, label2, value2 }) {
     let display = 0;
     if (displayType.selected === 'Integer') display = 0
     else if (displayType.selected === 'No Display') display = 7
     const label = isLabel ? '1' : '0'
-    const command =
+    let command =
       `HWCt#${index + 1}=${value}|${display}|0|${title}|${label}`
-    return command
+    + `|${label1}`
+    if (label2) command += `|${label2}|${value2}`
+    return command + '\n'
   },
   HWCc({ index, state }) {
       return `HWCc#${index + 1}=${state}\n`
@@ -64,14 +67,18 @@ const commandSerializers = {
   HWC({ index, state }) {
       return `HWC#${index + 1}=${state}\n`
   },
-  HWCg({controllerIndex, buffer }) {
+  HWCx({ index, type, value }) {
+    const encoded = value + (type << 10)
+    return `HWCx#${index}=${encoded}`
+  },
+  HWCg({index, buffer }) {
     if (!buffer) return ``
       let arr = new Array(3)
       arr[0] = buffer.slice(0, 86)
       arr[1] = buffer.slice(86, 172)
       arr[2] = buffer.slice(172, 256)
-    return `HWCg#${controllerIndex}=0:${arr[0].toString('base64')}`
-    + `\nHWCg#${controllerIndex}=1:${arr[1].toString('base64')}`
-    + `\nHWCg#${controllerIndex}=2:${arr[2].toString('base64')}`
+    return `HWCg#${index}=0:${arr[0].toString('base64')}`
+    + `\nHWCg#${index}=1:${arr[1].toString('base64')}`
+    + `\nHWCg#${index}=2:${arr[2].toString('base64')}\n`
   },
 }
