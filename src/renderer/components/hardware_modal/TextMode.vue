@@ -96,6 +96,21 @@ export default {
           value: "Integer",
           type: 'select'
         },
+        label1: {
+          name: "Label 1",
+          value: '',
+          type: 'text',
+        },
+        label2: {
+          name: "Label 2",
+          value: '',
+          type: 'text',
+        },
+        value2: {
+          name: "Secondary value",
+          value: 0,
+          type: 'number',
+        },
       }
     }
   },
@@ -128,28 +143,12 @@ export default {
   vertical-align: middle;
 }
 
-.modal-container {
-  width: 300px;
-  margin: 0px auto;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-  transition: all .3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-
 .modal-enter {
   opacity: 0;
 }
 
 .modal-leave-active {
   opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  transform: scale(1.1);
 }
 
 form {
@@ -168,5 +167,8 @@ li:hover {
 #submit {
   display: flex;
   justify-content: flex-end;
+}
+label {
+  padding: 0px 30px 0px 0px;
 }
 </style>

@@ -118,17 +118,24 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, .5);
-  display: table;
+  display: flex;
   transition: opacity .3s ease;
+  justify-content: center;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  align-self: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
 .modal-container {
-  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: auto;
   margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
@@ -151,11 +158,8 @@ export default {
   transform: scale(1.1);
 }
 
-form {
-  padding: 20px 30px;
-}
-
 ul {
+  margin: 0px;
   padding: 10px 10px;
 }
 

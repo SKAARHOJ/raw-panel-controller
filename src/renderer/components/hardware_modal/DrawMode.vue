@@ -3,6 +3,7 @@
           :width="width"
           :height="height"
           @contextmenu.prevent="update"
+          @scroll.prevent="update"
           @click="update"
           @mousemove="move"
           @mousedown="down = true"
@@ -46,7 +47,7 @@ export default {
   mounted() {
     this.interval = setInterval(() => {
       this.sendBuffer()
-    }, 1000)
+    }, 100)
     this.context.fillStyle = '#000000'
     this.context.fillRect(0, 0, this.width, this.height)
   },
@@ -59,7 +60,6 @@ export default {
       if (event.button == RIGHT_CLICK) {
         this.context.fillStyle = '#000000'
         value = 0
-
       }
       else this.context.fillStyle = '#ffffff'
       const rect = this.$refs.canvas.getBoundingClientRect()
@@ -74,7 +74,7 @@ export default {
       ipcRenderer.send('request', {
         command: 'HWCg',
         value: {
-          controllerIndex: +this.$route.params.id + 1,
+          index: +this.$route.params.id + 1,
           buffer: this.buffer
         }
       })
@@ -89,8 +89,7 @@ export default {
 <style scoped>
 canvas {
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
+  width: 700px;
   border-style: solid;
   image-rendering: pixelated;
 }
