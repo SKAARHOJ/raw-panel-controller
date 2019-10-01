@@ -1,11 +1,14 @@
 export function deserialize(line) {
   let index
-  if (line.match(/^HWC*/)) return parseHWC(line)
-  else if ((index = line.indexOf('=')) >= 0) return parseEquals(line, index)
-  else return {
+  let command
+  if (line.match(/^HWC*/)) command = parseHWC(line)
+  else if ((index = line.indexOf('=')) >= 0) command = parseEquals(line, index)
+  else command = {
     command: line,
     value: undefined
   }
+  command.raw = line
+  return command
 }
 
 export function serialize({ command, value }) {

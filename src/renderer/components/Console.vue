@@ -2,9 +2,9 @@
   <div id="console">
     <ul>
       <li v-for="line of lines">
-        <p width="300px" v-for="part of line">
-        {{ part }}
-        </p>
+        <span align="justify">
+        <PRE>{{line}}</PRE>
+        </span>
       </li>
     </ul>
   </div>
@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     append(info) {
-      const length = this.lines.unshift(info.split('\t'))
+      const length = this.lines.unshift(info)
       if (length > 50) this.lines.pop()
     }
   }
@@ -45,12 +45,14 @@ ul {
   box-sizing: border-box;
   padding-left: 30px;
   padding-right: 30px;
+  margin: 0px;
 }
 li {
   display: flex;
   justify-content: left;
 }
-p {
-  width: 300px;
+PRE, span {
+  margin: 0px;
+  width: 100%;
 }
 </style>

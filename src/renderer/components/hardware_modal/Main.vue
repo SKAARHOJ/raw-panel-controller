@@ -9,6 +9,10 @@
           </router-link>
         </ul>
         <router-view/>
+          <footer class="row">
+            <p align="justify"> {{ lastCommand }} </p>
+            <button @click="clipboard.writeText(lastCommand)"> Copy </button>
+          </footer>
       </div>
     </div>
   </div>
@@ -17,7 +21,7 @@
 
 <script>
 
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, clipboard } from 'electron'
 
 export default {
   name: 'hardware-modal',
@@ -27,6 +31,8 @@ export default {
     return {
       inputs: arr,
       menu: ["Text", "Draw"],
+      lastCommand: '',
+      clipboard
     }
   },
   computed: {
@@ -38,15 +44,12 @@ export default {
     this.close()
     next()
   },
+  mounted() {
+    ipcRenderer.on('raw_command', (event, data) => {
+      this.lastCommand = data.raw
+    })
+  },
   methods: {
-    open() {
-      console.log('opening')
-      const index = this.currentIndex
-      if (!this.inputs[index])
-        this.inputs[index] = this.makeHardwareInput()
-      ipcRenderer.send('request', { command: 'HWCc', value: { index, state: 130 }})
-      ipcRenderer.send('request', { command: 'HWC', value: { index, state: 36 }})
-    },
     close() {
       ipcRenderer.send('request', { command: 'HWC', value: { index: this.currentIndex, state: 0 }})
       ipcRenderer.send('request', { command: 'HWCc', value: { index: this.currentIndex, state: 0 }})
@@ -135,6 +138,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: auto;
   margin: 0px auto;
   background-color: #fff;
@@ -158,7 +162,9 @@ export default {
   transform: scale(1.1);
 }
 
-ul {
+.header {
+  width: 100%;
+  justify-content: space-evenly;
   margin: 0px;
   padding: 10px 10px;
 }
@@ -180,5 +186,20 @@ a:hover {
 #submit {
   display: flex;
   justify-content: flex-end;
+}
+
+footer {
+  padding: 0px 30px;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+p {
+  padding: 0px 30px;
+}
+
+button {
+  padding: 10px;
+  margin: 0px 30px;
 }
 </style>

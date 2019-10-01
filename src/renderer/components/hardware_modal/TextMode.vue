@@ -3,6 +3,8 @@
     <div class="row" v-for='(item, key) in inputs[currentIndex]'>
       <label> {{ item.name }} </label>
       <input
+        @input="sendToHardware"
+        @change="sendToHardware"
         v-if="item.type !== 'select'"
         v-focus="key === 'title'"
         autofocus
@@ -13,9 +15,6 @@
         {{ val }}
         </option>
       </select>
-    </div>
-    <div id="submit">
-      <input type="submit" value="Send"/>
     </div>
   </form>
 </template>
@@ -44,7 +43,6 @@ export default {
   },
   methods: {
     open() {
-      console.log('opening')
       const index = this.currentIndex
       if (!this.inputs[index])
         this.inputs[index] = this.makeHardwareInput()
@@ -57,12 +55,10 @@ export default {
       this.$router.push('/landing-page/')
     },
     sendToHardware() {
-      console.log(`sending ${this.currentIndex}`)
       ipcRenderer.send('request', {
         command: 'HWCt',
         value: this.makeHWCtValue(this.currentIndex)
       })
-      this.close()
     },
     makeHWCtValue(index) {
       let ret = { index }
@@ -70,7 +66,6 @@ export default {
       for (let key in current) {
         ret[key] = current[key].value
       }
-      console.log(ret)
       return ret
     },
     makeHardwareInput() {
@@ -110,6 +105,11 @@ export default {
           name: "Secondary value",
           value: 0,
           type: 'number',
+        },
+        useScale: {
+          name: "Add Scale",
+          type: 'checkbox',
+          value: false,
         },
       }
     }

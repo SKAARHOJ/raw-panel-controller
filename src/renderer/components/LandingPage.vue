@@ -48,33 +48,35 @@ export default {
   }},
   mounted() {
     ipcRenderer.on('list', (event, data) => {
-      this.$refs.svg.innerHTML = data
+      this.$refs.svg.innerHTML = data.value
     })
     ipcRenderer.on('_panelTopology_svgbase', (event, data) => {
-      this.$refs.svg.innerHTML = data
+      this.$refs.svg.innerHTML = data.value
     })
     ipcRenderer.on('_panelTopology_HWC', (event, data) => {
-      const json = JSON.parse(data)
+      const json = JSON.parse(data.value)
       this.hwc = json.HWc
       this.typeIndex = json.typeIndex
       this.generateSVG()
     })
     ipcRenderer.on('_serial', (event, data) => {
-      this.serial = data
+      this.serial = data.value
     })
     ipcRenderer.on('map', (event, data) => {
     })
     ipcRenderer.on('_model', (event, data) => {
-      this.model = data
+      this.model = data.value
     })
     ipcRenderer.on('_version', (event, data) => {
-      this.version = data
+      this.version = data.value
     })
     ipcRenderer.on('HWC', (event, data) => {
-      let line = `Component ${data.id} sent value ${data.value}`
-      if (data.direction) {
-        line += `\tfrom the ${data.direction}`
+      let val = data.value
+      let line = `Component ${val.id}\tsent value ${val.value}`
+      if (val.direction) {
+        line += `\tfrom the ${val.direction}`
       }
+      line += `\t[\t${data.raw}`.padEnd(24) + `]`
       this.$refs.console.append(line)
       const i = +data.id - 1
       let elem = document.getElementById(`hwc${i}`)
@@ -86,7 +88,6 @@ export default {
         let color = 'lightgreen'
         if (val < 0) color = 'lightcoral'
         elem.setAttribute('fill', color)
-        //setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
       }
       else if (data.value.match(/^Abs:*/)) { 
         elem.classList.add('selected')

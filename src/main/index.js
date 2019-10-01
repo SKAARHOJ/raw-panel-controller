@@ -39,7 +39,7 @@ function linkSocket(socket, window) {
   socket.on('close', () => {
     window.webContents.send('socket_closed')
   })
-  ipcMain.on('request', (event, data) => request(socket, data))
+  ipcMain.on('request', (event, data) => request(window, socket, data))
   let rl = readline.createInterface({input: socket })
   rl.on('line', (line) => response(window, socket, line));
   window.webContents.send('connected', true)

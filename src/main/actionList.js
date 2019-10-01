@@ -15,8 +15,8 @@ function defaultAction(window, socket, { command, value }) {
   socket.write('nack\n')
 }
 
-function forward(window, socket, { command, value }) {
-  window.webContents.send(command, value)
+function forward(window, socket, { command, value, raw }) {
+  window.webContents.send(command, { value, raw })
 }
 
 function getAction({ command, value }) {
@@ -32,7 +32,10 @@ export function response(window, socket, command) {
   f(window, socket, action)
 }
 
-export function request(socket, command) {
+export function request(window, socket, command) {
   const buffer = serialize(command)
+  window.webContents.send('raw_command', {
+    raw: buffer.slice(0, buffer.length -1)
+  })
   socket.write(buffer)
 }
