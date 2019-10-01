@@ -28,7 +28,6 @@
       });
       ipcRenderer.on('connected', (event, isConnected) =>  {
         setTimeout(() => { 
-          console.log(this.$route.path)
           if (isConnected && !this.$route.path.match(/\/landing-page\//))
             this.$router.push('/landing-page/')
         }, 1000)
