@@ -55,11 +55,9 @@ export default {
       ipcRenderer.send('request', { command: 'HWCc', value: { index: this.currentIndex, state: 0 }})
     },
     leave() {
-      console.log('leaving')
       this.$router.push('/landing-page/')
     },
     sendToHardware() {
-      console.log(`sending ${this.currentIndex}`)
       ipcRenderer.send('request', {
         command: 'HWCt',
         value: this.makeHWCtValue(this.currentIndex)
@@ -72,7 +70,6 @@ export default {
       for (let key in current) {
         ret[key] = current[key].value
       }
-      console.log(ret)
       return ret
     },
     makeHardwareInput() {

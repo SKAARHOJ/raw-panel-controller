@@ -4,7 +4,6 @@ import { ipcMain } from 'electron'
 const commands = {
   open({ filename }) {
     let bitmap = bitmap.BMPBitmap.fromFile(filename)
-    console.log(filename)
   }
 }
 

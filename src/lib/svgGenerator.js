@@ -176,7 +176,6 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
   HWc = _HWc
   let e = document.getElementById('ctrlimg')
 
-  console.log(map)
   // Creates "function" container div
   for (let i = 0; i < HWc.length; ++i) {
     

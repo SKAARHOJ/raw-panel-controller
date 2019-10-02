@@ -7,7 +7,6 @@ const actionList =
     socket.write('\nActivePanel=1\n')
   },
   ping(window, socket) { 
-    console.log('ping')
     socket.write('ack\n')
   },
   nack(window, socket) {
@@ -30,7 +29,6 @@ function getAction({ command, value }) {
 
 export function response(window, socket, command) {
   const action = deserialize(command)
-  console.log(action)
   const f = getAction(action)
   try {
   f(window, socket, action)
@@ -40,7 +38,6 @@ export function response(window, socket, command) {
 }
 
 export function request(window, socket, command) {
-  console.log('request', command)
   const buffer = serialize(command)
   window.webContents.send('raw_command', {
     raw: buffer.slice(0, buffer.length -1)

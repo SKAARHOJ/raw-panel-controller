@@ -83,7 +83,6 @@ export default {
       })
     },
     async loadImage() {
-      console.log(remote)
       let filename = (await remote.dialog.showOpenDialog(null, {
         filters: [
           { name: 'Bitmap', extensions: 'bmp' }
