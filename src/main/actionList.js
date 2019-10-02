@@ -7,12 +7,14 @@ const actionList =
     socket.write('\nActivePanel=1\n')
   },
   ping(window, socket) { 
+    console.log('ping')
     socket.write('ack\n')
   },
+  nack(window, socket) {
+  }
 }
 
 function defaultAction(window, socket, { command, value }) {
-  socket.write('nack\n')
 }
 
 function forward(window, socket, { command, value, raw }) {
@@ -28,14 +30,25 @@ function getAction({ command, value }) {
 
 export function response(window, socket, command) {
   const action = deserialize(command)
+  console.log(action)
   const f = getAction(action)
+  try {
   f(window, socket, action)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export function request(window, socket, command) {
+  console.log('request', command)
   const buffer = serialize(command)
   window.webContents.send('raw_command', {
     raw: buffer.slice(0, buffer.length -1)
   })
-  socket.write(buffer)
+  try {
+    socket.write(buffer)
+  } catch (err) {
+    console.log(err)
+    window.webContents.send('disconnected')
+  }
 }

@@ -38,38 +38,37 @@ export default {
   name: 'landing-page',
   components: { Console },
   data() { return {
-    hwc: [],
-    typeIndex:[],
-    serial: '',
-    model: '',
-    version: '',
     size: 100,
     rawCommand: '',
   }},
+  computed: {
+    serial () { return this.$store.state.serial },
+    model () { return this.$store.state.model },
+    version () { return this.$store.state.version },
+    hwc () { return this.$store.state.hwc },
+    typeIndex () { return this.$store.state.typeIndex },
+    map () { return this.$store.state.map },
+    svg() { return this.$store.state.svg }
+  },
+  watch: {
+    hwc: {
+      handler(newVal) {
+        this.generateSVG()
+      },
+      deep: true
+    },
+    svg: {
+      handler(newVal) {
+        this.$refs.svg.innerHTML = newVal
+      },
+      deep: true
+    },
+  },
   mounted() {
-    ipcRenderer.on('list', (event, data) => {
-      this.$refs.svg.innerHTML = data.value
-    })
-    ipcRenderer.on('_panelTopology_svgbase', (event, data) => {
-      this.$refs.svg.innerHTML = data.value
-    })
-    ipcRenderer.on('_panelTopology_HWC', (event, data) => {
-      const json = JSON.parse(data.value)
-      this.hwc = json.HWc
-      this.typeIndex = json.typeIndex
-      this.generateSVG()
-    })
-    ipcRenderer.on('_serial', (event, data) => {
-      this.serial = data.value
-    })
-    ipcRenderer.on('map', (event, data) => {
-    })
-    ipcRenderer.on('_model', (event, data) => {
-      this.model = data.value
-    })
-    ipcRenderer.on('_version', (event, data) => {
-      this.version = data.value
-    })
+    this.hidden = { map: {} }
+    ipcRenderer.send('request', { command: "map" })
+    ipcRenderer.send('request', { command: '\nPanelTopology?' })
+    ipcRenderer.send('request', { command:'list' })
     ipcRenderer.on('HWC', (event, data) => {
       let val = data.value
       let line = `Component ${val.id}\tsent value ${val.value}`
@@ -78,41 +77,34 @@ export default {
       }
       line += `\t[\t${data.raw}`.padEnd(24) + `]`
       this.$refs.console.append(line)
-      const i = +data.id - 1
+      for (let i of this.map[val.id]) {
       let elem = document.getElementById(`hwc${i}`)
-      if (data.value === 'Down') elem.classList.add('selected')
-      else if (data.value === 'Up') elem.classList.remove('selected')
-      else if (data.value === 'Speed:0') elem.setAttribute('fill', '#dddddd')
-      else if (data.value.match(/^Speed:*/)) {
-        const val = parseInt(data.value.substring(6))
+      if (val.value === 'Down') elem.classList.add('selected')
+      else if (val.value === 'Up') elem.classList.remove('selected')
+      else if (val.value === 'Speed:0') elem.setAttribute('fill', '#dddddd')
+      else if (val.value.match(/^Speed:*/)) {
+        const arg = parseInt(val.value.substring(6))
         let color = 'lightgreen'
-        if (val < 0) color = 'lightcoral'
+        if (arg < 0) color = 'lightcoral'
         elem.setAttribute('fill', color)
       }
-      else if (data.value.match(/^Abs:*/)) { 
+      else if (val.value.match(/^Abs:*/)) { 
         elem.classList.add('selected')
         setTimeout(() => elem.classList.remove('selected'), 500)
       }
-      else if (data.value.match(/Enc/)) {
-        const val = parseInt(data.value.substring(4))
+      else if (val.value.match(/Enc/)) {
+        const arg = parseInt(val.value.substring(4))
         let color = 'lightgreen'
-        if (val === -1) color = 'lightcoral'
+        if (arg === -1) color = 'lightcoral'
         elem.setAttribute('fill', color)
         setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
       }
+      }
     })
-    this.requestPanelInformation()
-    this.requestPanelTopology()
   },
   methods: {
-    requestPanelTopology() {
-      ipcRenderer.send('request', { command: '\nPanelTopology?' })
-    },
-    requestPanelInformation() {
-      ipcRenderer.send('request', { command:'list' })
-    },
     generateSVG() {
-      generateSVG(this.hwc, this)
+      generateSVG(this.hwc, this, this.map)
     },
     show(index) {
      this.$router.push(`hardware-modal/${index}/`)

@@ -172,12 +172,17 @@ function labelChanged(label) {
   _labels[parts[1]][parts[2]] = label.value;
 }
 
-export default function(_HWc, vueComponent) { // Initializes the whole page.
+export default function(_HWc, vueComponent, map) { // Initializes the whole page.
   HWc = _HWc
   let e = document.getElementById('ctrlimg')
 
+  console.log(map)
   // Creates "function" container div
-  for (let i = 0; i < HWc.length; i++) {
+  for (let i = 0; i < HWc.length; ++i) {
+    
+    if (!map[0].has(i)
+      || vueComponent.hidden.map[i]) continue
+    vueComponent.hidden.map[i] = i
     // Defines dimensions of HW element symbols
     var componentDimensions = {
       1: [120, 120], // KP01/12
