@@ -36,6 +36,7 @@ function restart({server, client, state_serverMode, window }, { port, ip, server
 
 function linkSocket(socket, window) {
   socket.setEncoding('utf8')
+  socket.on('error', (err) => console.log(err))
   socket.on('close', () => {
     window.webContents.send('socket_closed')
   })

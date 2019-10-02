@@ -178,7 +178,6 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
 
   // Creates "function" container div
   for (let i = 0; i < HWc.length; ++i) {
-    
     if (!map[0].has(i)
       || vueComponent.hidden.map[i]) continue
     vueComponent.hidden.map[i] = i
@@ -817,20 +816,29 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
 
     // Adds text of symbol:
     var sp = HWc[i].txt.split("|")
+    let fontSize = '35'
+    let yOffset = 60
+    let yBaseline = 43
+    if (!map[i + 1].has(i)) {
+      const index = map.slice(1).findIndex((it) => it.has(i))
+      sp.push(`HWC:${index + 1}`)
+      fontSize = '24'
+      yOffset = 30
+      yBaseline = 24
+    }
     var len = sp.length;
     if (len > 1 && sp[1].length > 0) len = 2;
     else len = 1;
     for (var tl = 0; tl < len; tl++) {
       var b = createSVGWithAttributes('text', {
         'x': HWc[i].x,
-        'y': HWc[i].y + 43 + tl * 60 - (len * 60 / 2),
+        'y': HWc[i].y + yBaseline + tl * yOffset - (len * yOffset / 2),
         'text-anchor': 'middle',
         'fill': '#000',
         'font-weight': 'bold',
-        'font-size': '35'
+        'font-size': fontSize
       });
       b.textContent = sp[tl];
-      //			if (HWc[i].type==40)	{setAttributes(b,{'text-anchor':'start','x':HWc[i].x+20});}
       addSVGElement(b, HWc[i][5]);
     }
 
