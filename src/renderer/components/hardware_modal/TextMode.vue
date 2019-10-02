@@ -10,8 +10,8 @@
         autofocus
         :type="item.type"
         v-model="inputs[currentIndex][key].value"/>
-      <select v-else v-model="item.value">
-        <option v-for="val of item.options" :value="val">
+      <select v-else v-model="item.value" @change="sendToHardware">
+        <option v-for="val, i of item.options" :value="i">
         {{ val }}
         </option>
       </select>
@@ -66,6 +66,7 @@ export default {
       for (let key in current) {
         ret[key] = current[key].value
       }
+      console.log(ret)
       return ret
     },
     makeHardwareInput() {
@@ -87,8 +88,21 @@ export default {
         },
         displayType: {
           name: "Display Type",
-          options: ["Integer", "No Display"],
-          value: "Integer",
+          options: [
+            "X",
+            "10^-3 X.XX",
+            "X%",
+            "XdB",
+            "XF",
+            "1/X",
+            "XK",
+            "Hidden",
+            "10^-3 X.XXX",
+            "10^-2 XX.XX",
+            "1 Text line",
+            "2 Text lines",
+          ],
+          value: 0,
           type: 'select'
         },
         label1: {
@@ -106,11 +120,11 @@ export default {
           value: 0,
           type: 'number',
         },
-        useScale: {
-          name: "Add Scale",
-          type: 'checkbox',
-          value: false,
-        },
+        // useScale: {
+        //   name: "Add Scale",
+        //   type: 'checkbox',
+        //   value: false,
+        // },
       }
     }
   },

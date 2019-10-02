@@ -54,12 +54,9 @@ function parseEquals(line, index) {
 const commandSerializers = {
   HWCt({ index,  title, isLabel, value,
     displayType, label1, label2, value2 }) {
-    let display = 0;
-    if (displayType.selected === 'Integer') display = 0
-    else if (displayType.selected === 'No Display') display = 7
     const label = isLabel ? '1' : '0'
     let command =
-      `HWCt#${index + 1}=${value}|${display}|0|${title}|${label}`
+      `HWCt#${index + 1}=${value}|${displayType}|0|${title}|${label}`
     + `|${label1}`
     if (label2) command += `|${label2}|${value2}`
     return command + '\n'
