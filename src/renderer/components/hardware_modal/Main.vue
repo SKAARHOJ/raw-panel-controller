@@ -10,7 +10,7 @@
         </ul>
         <router-view/>
           <footer class="row">
-            <p align="justify"> {{ lastCommand }} </p>
+            <p class="footer" align="justify"> {{ lastCommand }} </p>
             <button @click="clipboard.writeText(lastCommand)"> Copy </button>
           </footer>
       </div>
@@ -186,17 +186,24 @@ a:hover {
 }
 
 footer {
-  padding: 0px 30px;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 10px 10px;
   width: 100%;
   justify-content: space-evenly;
+  align-items: center;
 }
 
-p {
-  padding: 0px 30px;
+.footer {
+  padding: 10px 0px;
+  width: 200px;
+  overflow-x: scroll;
 }
 
 button {
+  box-sizing: border-box;
   padding: 10px;
-  margin: 0px 30px;
+  max-height: 40px;
+  text-align: center;
 }
 </style>

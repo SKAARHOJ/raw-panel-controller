@@ -11,7 +11,6 @@
           @mouseup="down = false"
           >
   </canvas>
-    <button @click="loadImage"> load </button>
     </div>
 </template>
 
@@ -82,7 +81,7 @@ export default {
         }
       })
     },
-    async loadImage() {
+    async load() {
       let filename = (await remote.dialog.showOpenDialog(null, {
         filters: [
           { name: 'Bitmap', extensions: 'bmp' }
