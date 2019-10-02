@@ -1,9 +1,9 @@
-import * as  bitmap from 'bitmap-manipulation'
+import bitmap from 'bitmap-manipulation'
 import { ipcMain } from 'electron'
 
 const commands = {
   open({ filename }) {
-    let bitmap = bitmap.BMPBitmap.fromFile(filename)
+    let file = bitmap.BMPBitmap.fromFile(filename)
   }
 }
 
