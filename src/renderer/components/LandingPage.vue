@@ -47,7 +47,6 @@ export default {
     version () { return this.$store.state.version },
     hwc () { return this.$store.state.hwc },
     typeIndex () { return this.$store.state.typeIndex },
-    map () { return this.$store.state.map },
     svg() { return this.$store.state.svg }
   },
   watch: {
@@ -65,7 +64,6 @@ export default {
     },
   },
   mounted() {
-    this.hidden = { map: {} }
     ipcRenderer.send('request', { command: "map" })
     ipcRenderer.send('request', { command: '\nPanelTopology?' })
     ipcRenderer.send('request', { command:'list' })
@@ -77,7 +75,7 @@ export default {
       }
       line += `\t[\t${data.raw}`.padEnd(24) + `]`
       this.$refs.console.append(line)
-      for (let i of this.map[val.id]) {
+      for (let i of this.$store.state.map[val.id]) {
       let elem = document.getElementById(`hwc${i}`)
       if (val.value === 'Down') elem.classList.add('selected')
       else if (val.value === 'Up') elem.classList.remove('selected')
@@ -101,10 +99,15 @@ export default {
       }
       }
     })
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type !== "map") return;
+      this.generateSVG()
+    })
   },
   methods: {
     generateSVG() {
-      generateSVG(this.hwc, this, this.map)
+      this.$refs.svg.innerHTML = this.svg
+      generateSVG(this.hwc, this, this.$store.state.map)
     },
     show(index) {
      this.$router.push(`hardware-modal/${index}/`)

@@ -178,9 +178,8 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
 
   // Creates "function" container div
   for (let i = 0; i < HWc.length; ++i) {
-    if (!map[0].has(i)
-      || vueComponent.hidden.map[i]) continue
-    vueComponent.hidden.map[i] = i
+    const index = map.slice(1).findIndex((it) => it.has(i))
+    if (index === -1) continue
     // Defines dimensions of HW element symbols
     var componentDimensions = {
       1: [120, 120], // KP01/12
@@ -820,7 +819,6 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
     let yOffset = 60
     let yBaseline = 43
     if (!map[i + 1].has(i)) {
-      const index = map.slice(1).findIndex((it) => it.has(i))
       sp.push(`HWC:${index + 1}`)
       fontSize = '24'
       yOffset = 30

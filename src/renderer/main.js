@@ -30,9 +30,15 @@ const store = new Vuex.Store({
   mutations: {
     map(state, newVal) {
       const [key, value] = newVal.split(':')
-      if (!+key || !+value) return;
-      state.map[+value].add(+key - 1)
-      state.map[0].add(+key - 1)
+      if (!+key) {
+        return ;
+      }
+      const id = +key - 1
+      for (let i in state.map) {
+        state.map[i].delete(id)
+      }
+      state.map[+value].add(id)
+      state.map[0].add(id)
     },
     list(state, newVal) {
       state.svg = newVal
