@@ -3,6 +3,10 @@
     <h3 ref="header" class="hidden"> {{ header }} </h3>
     <form disabled="connecting" @submit.prevent="restart">
       <div class="row">
+        <label> Server Mode </label>
+        <input @click='changeIP' class="checkbox" v-model="serverMode" type="checkbox"/>
+      </div>
+      <div class="row">
         <label> Port </label>
         <input
           class="address"
@@ -17,10 +21,6 @@
       <div class="row">
         <label> IP </label>
         <input class="address" v-model="ip" type="text"/>
-      </div>
-      <div class="row">
-        <label> Server Mode </label>
-        <input @click='changeIP' class="checkbox" v-model="serverMode" type="checkbox"/>
       </div>
       <div style="display: flex; direction: rtl">
         <input ref="button" value="Connect" type="submit">
