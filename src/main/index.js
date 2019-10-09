@@ -32,7 +32,6 @@ function restart({server, client, state_serverMode, window }, { port, ip, server
     }
     linkSocket(client, window)
   }
-  window.webContents.send('restarted')
 }
 
 function linkSocket(socket, window) {
@@ -41,14 +40,14 @@ function linkSocket(socket, window) {
   let rl = readline.createInterface({input: socket })
   rl.on('line', (line) => response(window, socket, line));
   rl.on('error', (err) => console.log('readline err'))
-  window.webContents.send('connected', true)
+  socket.on('connect', () => window.webContents.send('connected', true))
   socket.on('error', (err) =>  {
     rl.close()
     console.log(err)
   })
   socket.on('close', () => {
     rl.close()
-    window.webContents.send('socket_closed')
+    window.webContents.send('disconnected')
   })
 }
 
