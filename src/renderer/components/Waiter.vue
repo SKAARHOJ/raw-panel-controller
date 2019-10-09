@@ -4,7 +4,7 @@
     <form disabled="connecting" @submit.prevent="restart">
       <div class="row">
         <label> Server Mode </label>
-        <input @click='changeIP' class="checkbox" v-model="serverMode" type="checkbox"/>
+        <input class="checkbox" v-model="serverMode" type="checkbox"/>
       </div>
       <div class="row">
         <label> Port </label>
@@ -45,6 +45,11 @@ export default {
     }
   },
   mounted() {
+    ipcRenderer.on('controller_ip', (event, data) => {
+      console.log(data)
+      this.ip = data.addresses[0]
+      this.port = data.port
+    })
     ipcRenderer.send('connected')
     ipcRenderer.on('error/client_connection_refused', (event) =>  {
       console.log('error')
@@ -54,6 +59,7 @@ export default {
     ipcRenderer.on('restarted', () => { 
       setTimeout(() => this.restarting = false, 1000)
     })
+    ipcRenderer.send('ready')
   },
   methods: {
     restart() {
