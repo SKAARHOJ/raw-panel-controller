@@ -58,8 +58,9 @@ export default {
   },
   methods: {
     update(event) {
+      console.log(event)
       let value = 1
-      if (event.button == RIGHT_CLICK) {
+      if (event.button == RIGHT_CLICK || event.ctrlKey) {
         this.context.fillStyle = '#000000'
         value = 0
       }
@@ -67,8 +68,8 @@ export default {
       const rect = this.$refs.canvas.getBoundingClientRect()
       const scaleX = this.$refs.canvas.width / this.$refs.canvas.offsetWidth
       const scaleY = this.$refs.canvas.height / this.$refs.canvas.offsetHeight
-      const x = Math.round((event.x - rect.left) * scaleX)
-      const y = Math.round((event.y - rect.top) * scaleY)
+      const x = Math.round(((event.x - rect.left) * scaleX) - 0.5)
+      const y = Math.round(((event.y - rect.top) * scaleY) - 0.5)
       this.context.fillRect(x, y, 1, 1)
       modifyBuffer(this.buffer, x, y, value)
     },
