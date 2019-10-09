@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     update(event) {
-      console.log(event)
       let value = 1
       if (event.button == RIGHT_CLICK || event.ctrlKey) {
         this.context.fillStyle = '#000000'
