@@ -23,11 +23,10 @@ export default {
         this.$store.commit(key, data.value)
       })
     }
-    ipcRenderer.on('error/client_connection_refused', (event) =>  {
-      console.log('error')
-      this.header = 'Connection refused'
-      this.$refs.header.classList.remove('hidden')
-    });
+    ipcRenderer.on('disconnected', (event) =>  {
+      if (this.$route.path !== '/')
+        this.$router.push('/').catch(()=>{})
+    })
     ipcRenderer.on('connected', (event, isConnected) =>  {
       setTimeout(() => { 
         if (isConnected && !this.$route.path.match(/landing-page/))
