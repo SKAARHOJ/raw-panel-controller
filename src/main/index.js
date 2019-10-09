@@ -3,6 +3,8 @@ import * as net from 'net'
 import * as readline from 'readline'
 import { request, response } from './actionList'
 import bitmap from './bitmap'
+import * as mdns from 'mdns-js'
+
 
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -23,7 +25,6 @@ function restart({server, client, state_serverMode, window }, { port, ip, server
     server.listen(port, ip)
   } else {
     try {
-    console.log('connecting client')
       client.connect(port, ip)
     } catch (err) {
       window.webContents.send('error/client_connection_refused')
@@ -51,6 +52,17 @@ function linkSocket(socket, window) {
   })
 }
 
+function find_services(window, mdnsBrowser) {
+  mdnsBrowser.on('ready', function () {
+    mdnsBrowser.discover();
+  });
+
+  mdnsBrowser.on('update', function (data) {
+    if (!(data.fullname && data.fullname.match(/skaarhoj_raw_panel/))) return
+    window.webContents.send('controller_ip', data)
+  });
+}
+
 function createWindow () {
   let window = new BrowserWindow({
     height: 563,
@@ -64,6 +76,10 @@ function createWindow () {
     serverMode: false,
     window,
   }
+  ipcMain.on('ready', (event) => {
+    let mdnsBrowser = mdns.createBrowser()
+    find_services(window, mdnsBrowser)
+  })
   ipcMain.on('connected', (event, data) => {
     if (!state.serverMode) {
       state.server.getConnections((err, count) => {
