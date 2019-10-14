@@ -17,7 +17,6 @@ const routes = [
     children: [
       {
         path: 'hardware-modal/:id/',
-        name: 'hardware-modal',
         component: HardwareModal,
         meta: { showModal: false },
         children: [
