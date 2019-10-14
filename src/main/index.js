@@ -70,7 +70,10 @@ function createWindow () {
   })
   window.loadURL(winURL)
   let state = {
-    server: net.createServer((socket) => linkSocket(socket, window)),
+    server: net.createServer((socket) => {
+      linkSocket(socket, window)
+      window.webContents.send('connected', true)
+    }),
     client: new net.Socket(),
     serverMode: false,
     window,
