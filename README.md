@@ -1,6 +1,13 @@
 # raw-panel-controller
 
-> Skaarhoj controller for raw panel mode
+> Skaarhoj software controller for devices in Raw Panel Mode
+
+This is an example application of how to interact with the Raw Panel
+Device Core. It allows you to test serveral features of the device core, as well
+as generate and receive commands.
+
+It supports linux, macOS, and should work with Windows, but this
+has not been tested yet.
 
 #### Build Setup
 
