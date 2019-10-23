@@ -5,8 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on:
-      matrix: [windows-latest, macOS-latest, ubuntu-latest]
+    runs-on: windows-latest
 
     strategy:
       matrix:
