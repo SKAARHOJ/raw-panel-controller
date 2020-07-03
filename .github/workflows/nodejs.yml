@@ -24,5 +24,6 @@ jobs:
 
       env:
         CI: true
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: npm build
       run: npm run build
