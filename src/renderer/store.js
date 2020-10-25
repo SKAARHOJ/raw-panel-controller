@@ -26,6 +26,8 @@ export default new Vuex.Store({
       for (let i in state.map) {
         state.map[i].delete(id)
       }
+      if (!state.map[+value])
+        state.map[+value] = new Set()
       state.map[+value].add(id)
       state.map[0].add(id)
     },
@@ -46,6 +48,7 @@ export default new Vuex.Store({
     },
     _panelTopology_HWC(state, newVal) {
       const json = JSON.parse(newVal)
+      console.log(json)
       state.hwc = json.HWc
       state.typeIndex = json.typeIndex
     }

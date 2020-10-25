@@ -75,28 +75,30 @@ export default {
       }
       line += `\t[\t${data.raw}`.padEnd(24) + `]`
       this.$refs.console.append(line)
+      if (!this.$store.state.map[val.id]) return;
       for (let i of this.$store.state.map[val.id]) {
-      let elem = document.getElementById(`hwc${i}`)
-      if (val.value === 'Down') elem.classList.add('selected')
-      else if (val.value === 'Up') elem.classList.remove('selected')
-      else if (val.value === 'Speed:0') elem.setAttribute('fill', '#dddddd')
-      else if (val.value.match(/^Speed:*/)) {
-        const arg = parseInt(val.value.substring(6))
-        let color = 'lightgreen'
-        if (arg < 0) color = 'lightcoral'
-        elem.setAttribute('fill', color)
-      }
-      else if (val.value.match(/^Abs:*/)) { 
-        elem.classList.add('selected')
-        setTimeout(() => elem.classList.remove('selected'), 500)
-      }
-      else if (val.value.match(/Enc/)) {
-        const arg = parseInt(val.value.substring(4))
-        let color = 'lightgreen'
-        if (arg === -1) color = 'lightcoral'
-        elem.setAttribute('fill', color)
-        setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
-      }
+        let elem = document.getElementById(`hwc${i}`)
+        if (!elem) return;
+        if (val.value === 'Down') elem.classList.add('selected')
+        else if (val.value === 'Up') elem.classList.remove('selected')
+        else if (val.value === 'Speed:0') elem.setAttribute('fill', '#dddddd')
+        else if (val.value.match(/^Speed:*/)) {
+          const arg = parseInt(val.value.substring(6))
+          let color = 'lightgreen'
+          if (arg < 0) color = 'lightcoral'
+          elem.setAttribute('fill', color)
+        }
+        else if (val.value.match(/^Abs:*/)) { 
+          elem.classList.add('selected')
+          setTimeout(() => elem.classList.remove('selected'), 500)
+        }
+        else if (val.value.match(/Enc/)) {
+          const arg = parseInt(val.value.substring(4))
+          let color = 'lightgreen'
+          if (arg === -1) color = 'lightcoral'
+          elem.setAttribute('fill', color)
+          setTimeout(() => elem.setAttribute('fill', '#dddddd'), 500)
+        }
       }
     })
     this.$store.subscribe((mutation, state) => {

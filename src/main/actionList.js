@@ -23,7 +23,8 @@ function forward(window, socket, { command, value, raw }) {
 function getAction({ command, value }) {
   const f = actionList[command]
   if (f) return f
-  else if (value) return forward
+  console.log(command, value)
+  if (value) return forward
   return defaultAction
 }
 

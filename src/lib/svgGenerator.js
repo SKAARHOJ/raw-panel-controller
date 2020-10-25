@@ -83,11 +83,17 @@ function createSVGWithAttributes(n, attr) { // Creates SVG element with attribut
 }
 
 function addSVGElement(element, display) { // Add SVG element
-  appendChild(getElementById("ctrlimg" + (display ? display : "")), element);
-  getElementById("ctrlimg" + (display ? display : "")).style.display = '';
+  let elem = getElementById("ctrlimg" + (display ? display : ""))
+  if (!elem) return;
+  appendChild(elem, element);
+  elem.display = '';
 }
 
 function appendChild(e1, e2) {
+  if (!e1) { 
+    console.log('No element found')
+    return ;
+  }
   e1.appendChild(e2);
 }
 
@@ -178,7 +184,8 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
 
   // Creates "function" container div
   for (let i = 0; i < HWc.length; ++i) {
-    const index = map.slice(1).findIndex((it) => it.has(i))
+    console.log(HWc[i])
+    const index = map.slice(1).findIndex((it) => it && it.has(i))
     if (index === -1) continue
     // Defines dimensions of HW element symbols
     var componentDimensions = {
@@ -278,6 +285,11 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
       143: [100, 520], // Slider LED Bar 10
       144: [568, 50], // Tally LED Bar, large (ID display)
       145: [80, 520], // Slider LED Bar 10, narrow
+      146: [157, 51], // Status LEDs, large (5.1x)
+      147: [100, 770], // Slider LED Bar 15
+
+      160: [232, 206], // OLED SSW
+
 
       250: [214, 34], // Controller / Module
     };
@@ -302,7 +314,7 @@ export default function(_HWc, vueComponent, map) { // Initializes the whole page
             'width': componentDimensions[HWc[i].type][0],
             'height': componentDimensions[HWc[i].type][1],
             'class': 'hwcElement',
-            'id': 'hwc' + i
+            'id': 'hwc' + HWc.id
           });
         }
         b.addEventListener('click', () => vueComponent.show(i))
