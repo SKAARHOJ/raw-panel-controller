@@ -1,4 +1,6 @@
-# raw-panel-controller
+# raw-panel-controller [Retired]
+
+[DEPRICATED! Use raw-panel-explorer instead]
 
 > Skaarhoj software controller for devices in Raw Panel Mode
 
